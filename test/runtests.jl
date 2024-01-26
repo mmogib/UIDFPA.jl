@@ -5,5 +5,5 @@ using Test
     # Write your tests here.
 
     @test 3 == firstfun(1, 2)
-    @test 1 == firstfun(1, 2)
+    @test -3 == firstfun(-5, 2)
 end
