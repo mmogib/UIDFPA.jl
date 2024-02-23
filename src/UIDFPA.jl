@@ -1,15 +1,19 @@
 module UIDFPA
+using LinearAlgebra
+using JuMP, HiGHS
+include("types.jl")
+include("algorithms.jl")
 
 # Write your package code here.
 
-"""@docs
-    firstfun(a,b)
-returns a + b
-"""
-function firstfun(a, b)
-    a + b
-end
-
-export firstfun
+export uidfpa,
+    Polyhedral,
+    SolutionInfo,
+    ResultMessage,
+    SuccessSolution,
+    FailureMessage,
+    NECProblem,
+    UIDFPAParams,
+    compute_alpha_k
 
 end
