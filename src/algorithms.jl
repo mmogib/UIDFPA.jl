@@ -34,6 +34,7 @@ function uidfpa(Problem::NECProblem, x0::Vector{Float64}, params::UIDFPAParams; 
     Pcheck = Problem.Ω.check
     T(x, i=0) = (F(x), i + 1)
     compute_alpha = LS(F, ρ, σ, mxitrs)
+    x0 = Pcheck(x0) ? x0 : P(x0)
     x1 = w0 = w1 = copy(x0)
     Fvalue, Fevals = T(x0)
     Fw0 = Fw1 = Fvalue

@@ -6,10 +6,11 @@ struct Polyhedral
     project::Function
     check::Function
     function Polyhedral(A::Matrix{Float64}, b::Vector{Float64}, lb::Vector{Float64}, ub::Vector{Float64})
+        n = size(A, 2)
         function project(w, z=zeros(n))
             model = Model(HiGHS.Optimizer)
             set_silent(model)
-            @variable(model, u[1:length(w)])
+            @variable(model, u[1:n])
             @constraint(model, A * u .<= b)
             @constraint(model, lb .<= u .<= ub)
             @objective(model, Min, dot(w, u - z))
