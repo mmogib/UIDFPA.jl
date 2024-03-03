@@ -33,7 +33,7 @@ struct Polyhedral
         new(A, b, lb, ub, project, check)
     end
 end
-
+Polyhedral(A::Matrix{<:Real}, b::Vector{<:Real}, lb::Vector{<:Real}, ub::Vector{<:Real}) = Polyhedral(Float64.(A), Float64.(b), Float64.(lb), Float64.(ub))
 Polyhedral(A::Matrix{<:Real}, b::Vector{<:Real}) = begin
     _, n = size(A)
     lb = Vector{Float64}(-Inf64, n)
