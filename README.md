@@ -16,7 +16,7 @@ add https://github.com/mmogib/UIDFPA.jl
 ## Usage
 Let $F:\mathbb{R}^n\to \mathbb{R}^n$. ``UIDFPA`` algorithm solves the problem
 ```math
-\text{Find } x^*\in\Omega\subseteq \mathbb{R}^n \quad \text{such}\quad F(x^*)=0 
+\text{Find } x^*\in\Omega\subseteq \mathbb{R}^n \quad \text{such that}\quad F(x^*)=0 
 ```
 where 
 ```math
@@ -32,7 +32,7 @@ using UIDFPA
 n = 1_000;
 F(x) = exp.(x) .- 1;
 A = ones(1,n);
-b =[1000.0];
+b =[n];
 lb = -ones(n);
 ub = n*ones(n);
 Omega = Polyhedral(A,b,lb,ub)
