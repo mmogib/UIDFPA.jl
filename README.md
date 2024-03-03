@@ -15,26 +15,27 @@ add https://github.com/mmogib/UIDFPA.jl
 
 ## Usage
 Let $F:\mathbb{R}^n\to \mathbb{R}^n$. ``UIDFPA`` algorithm solves the problem
-$$
+```math
 \text{Find } x^*\in\Omega\subseteq \mathbb{R}^n \quad \text{such}\quad F(x^*)=0 
-$$
+```
 where 
-$$
+```math
 \Omega =\{x\in\mathbb{R}^n \;|\; Ax\leq b, \quad lb\leq x \leq ub\}.
-$$
+```
 Here is an example 
-$$
+```math
 F(x)=e^x-1 (\text{componentwise}), \quad \sum_{i}^n x_i \leq n, \quad  x_i\in [-1,n],\;\text{for }i\in \{1,\cdots,n\}
-$$
+```
 So $A=[1\;\; 1\;\; \cdots\;\; 1]$, $lb=[-1\;\; -1\;\; \cdots\;\; -1]$ and $ub=[n\;\; n\;\; \cdots\;\; n]$. To solve this example for $n=1000$.
 ```julia
 using UIDFPA
-n = 1_000
-f(x) = exp.(x) .- 1
-A = ones(n)
-lb = -ones(n)
-ub = n*ones(n)
-Omega = Ployhedral(A,b,lb,ub)
+n = 1_000;
+F(x) = exp.(x) .- 1;
+A = ones(1,n);
+b =[1000.0];
+lb = -ones(n);
+ub = n*ones(n);
+Omega = Polyhedral(A,b,lb,ub)
 problem = NECProblem(F,Omega)
 params = UIDFPAParams(0.25,0.5)
 x0 = zeros(n)

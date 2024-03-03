@@ -41,12 +41,16 @@ Polyhedral(A::Matrix{Float64}, b::Vector{Float64}) = begin
 
     Polyhedral(A, b, lb, ub)
 end
+
 Polyhedral(A::Matrix{Float64}, b::Vector{Float64}, lb::Vector{Float64}) = begin
     _, n = size(A)
     ub = Vector{Float64}(Inf64, n)
     Polyhedral(A, b, lb, ub)
 end
 
+Polyhedral(A::Matrix{Int}, b::Vector{Int}, lb::Vector{Int}, ub::Vector{Int}) = Polyhedral(Float64.(A), Float64.(b), Float64.(lb), Float64.(ub))
+Polyhedral(A::Matrix{Int}, b::Vector{Int}) = Polyhedral(Float64.(A), Float64.(b))
+Polyhedral(A::Matrix{Int}, b::Vector{Int}, lb::Vector{Int}) = Polyhedral(Float64.(A), Float64.(b), Float64.(lb))
 
 struct SolutionInfo
     x::Union{Nothing,Vector{Float64}}
