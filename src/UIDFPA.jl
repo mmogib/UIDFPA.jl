@@ -1,7 +1,9 @@
 module UIDFPA
 using LinearAlgebra
-using JuMP, HiGHS
+using JuMP, HiGHS, Ipopt
 include("types.jl")
+include("searchdirections.jl")
+include("linesearchs.jl")
 include("algorithms.jl")
 
 # Write your package code here.
@@ -14,6 +16,6 @@ export uidfpa,
     FailureMessage,
     NECProblem,
     UIDFPAParams,
-    compute_alpha_k
-
+    compute_alpha_k,
+    UIDFPAOptions
 end

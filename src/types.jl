@@ -3,11 +3,38 @@ struct Polyhedral
     b::Vector{Float64}
     lb::Vector{Float64}
     ub::Vector{Float64}
-    project::Function
+    approximate_project::Function
+    exact_project::Function
     check::Function
     function Polyhedral(A::Matrix{Float64}, b::Vector{Float64}, lb::Vector{Float64}, ub::Vector{Float64})
         n = size(A, 2)
-        function project(w, z=zeros(n))
+        solver = optimizer_with_attributes(
+            Ipopt.Optimizer,
+            MOI.Silent() => true,
+            "sb" => "yes",
+            "max_iter" => 10_000,
+        )
+        function exact_project(w, z=zeros(n))
+            model = Model(solver)
+            set_silent(model)
+            @variable(model, u[1:n])
+            @constraint(model, A * u .<= b)
+            @constraint(model, lb .<= u .<= ub)
+            @objective(model, Min, 0.5 * dot(u, u) - dot(w, u))
+            try
+
+                optimize!(model)
+                if termination_status(model) == MOI.LOCALLY_SOLVED
+                    return value.(u)
+                else
+                    return nothing
+                end
+            catch err
+                # println(err)
+                return nothing
+            end
+        end
+        function approx_project(w, z=zeros(n))
             model = Model(HiGHS.Optimizer)
             set_silent(model)
             @variable(model, u[1:n])
@@ -30,7 +57,7 @@ struct Polyhedral
         function check(x, ϵ=1e-8)
             all(lb - x .<= ϵ) && all(x - ub .<= ϵ) && all(A * x - b .<= ϵ)
         end
-        new(A, b, lb, ub, project, check)
+        new(A, b, lb, ub, approx_project, exact_project, check)
     end
 end
 Polyhedral(A::Matrix{<:Real}, b::Vector{<:Real}, lb::Vector{<:Real}, ub::Vector{<:Real}) = Polyhedral(Float64.(A), Float64.(b), Float64.(lb), Float64.(ub))
@@ -92,3 +119,27 @@ struct UIDFPAParams
 end
 UIDFPAParams(ρ::Float64, θ::Float64) = UIDFPAParams(ρ, θ, 0.01, (x = 0.5) -> x)
 UIDFPAParams(ρ::Float64, θ::Float64, σ::Float64) = UIDFPAParams(ρ, θ, σ, (x = 0.5) -> x)
+
+struct UIDFPAOptions
+    params::UIDFPAParams
+    LineSearch::Union{Symbol,Function}
+    SearchDirection::Union{Symbol,Function}
+    ϵ::Float64
+    mxitrs::Int
+    Inertia::Bool
+    Approximate::Bool
+end
+
+UIDFPAOptions(p::UIDFPAParams) = UIDFPAOptions(p, :default, :default, 1e-6, 2000, false, false)
+UIDFPAOptions(p::UIDFPAParams, ls::Function) = UIDFPAOptions(p, ls, :default, 1e-6, 2000, false, false)
+UIDFPAOptions(p::UIDFPAParams, ls::Union{Symbol,Function}, sd::Function) = begin
+    if isa(ls, Symbol)
+        UIDFPAOptions(p, :default, sd, 1e-6, 2000, false, false)
+    else
+        UIDFPAOptions(p, ls, sd, 1e-6, 2000, false, false)
+    end
+
+end
+UIDFPAOptions(p::UIDFPAParams, inertia::Bool) = UIDFPAOptions(p, :default, :default, 1e-6, 2000, inertia, false)
+UIDFPAOptions(p::UIDFPAParams, ϵ::Float64) = UIDFPAOptions(p, :default, :default, ϵ, 2000, inertia, false)
+UIDFPAOptions(p::UIDFPAParams, mxitrs::Int) = UIDFPAOptions(p, :default, :default, ϵ, mxitrs, inertia, false)

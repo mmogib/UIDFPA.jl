@@ -12,8 +12,10 @@ using Test
     Omega = Polyhedral(A, b, lb, ub)
     problem = NECProblem(F, Omega)
     params = UIDFPAParams(0.25, 0.5)
-    x0 = zeros(n)
-    solution = uidfpa(problem, x0, params, ϵ=1e-6, mxitrs=2000)
+    x0 = ones(n)
+
+    options = UIDFPAOptions(params, :default, :default, 1e-6, 2000, true, false)
+    solution = uidfpa(problem, x0; options=options)
     @test solution.solution.Fnorm <= 1e-6
-    @test solution.solution.x ≈ zeros(n)
+    @test maximum(abs.(solution.solution.x)) <= 1e-6
 end
