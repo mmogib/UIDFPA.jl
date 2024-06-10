@@ -1,5 +1,5 @@
 function steepest_descent()
-    return function findNewDk(_, Fu1, _, _, _, k)
+    return function findNewDk(Fu0, Fu1, d0, u0, u1, k)
         -Fu1
     end
 end
@@ -7,7 +7,7 @@ end
 
 
 function cruz_raydan()
-    return function findNewDk(Fu0, Fu1, _, u0, u1, k)
+    return function findNewDk(Fu0, Fu1, d0, u0, u1, k)
         y0 = Fu1 - Fu0
         s0 = u1 - u0
         λ = dot(s0, s0) / dot(s0, y0)
@@ -18,7 +18,7 @@ end
 
 
 function ye_zhou(; r=0.1)
-    return function findNewDk(Fu0, Fu1, _, u0, u1, k)
+    return function findNewDk(Fu0, Fu1, d0, u0, u1, k)
         s0 = u1 - u0
         y0 = Fu1 - Fu0 + r * s0
         λ = dot(s0, s0) / dot(s0, y0)
@@ -27,7 +27,8 @@ function ye_zhou(; r=0.1)
 end
 
 function abubaker_mohammad()
-    return function findNewDk(Fu0, Fu1, _, u0, u1, k)
+    return function findNewDk(Fu0, Fu1, d0, u0, u1, k)
+        # println(k)
         k1 = k + 1
         r = 1 / k1^2
         t = 1 / (exp(k1)^k1)
@@ -43,7 +44,9 @@ function abubaker_mohammad()
 end
 
 function compute_search_direction(; r=0.1, ψ=0.2, αmin=1.0e-10, αmax=Inf64)
-    return function findNewDk(Fu0, Fu1, d0, u0, u1, _)
+    return function findNewDk(Fu0, Fu1, d0, u0, u1, k)
+        # println("k=$k", " ", norm.([Fu0, Fu1, d0, u0, u1]))
+
         y0 = Fu1 - Fu0
         s0 = u1 - u0 + r * y0
         # v1 = max(ψ * norm(d0) * norm(y0), dot(d0, y0), norm(Fu0)^2)
