@@ -66,7 +66,7 @@ end
 
 
 function LSIV(F::Function, β::Float64, σ::Float64, maxitrs::Int)
-    b = zeros(1:(maxitrs+1))
+    b = zeros(maxitrs + 1)
     foreach(1:(maxitrs+1)) do i
         if 1 == i
             b[i] = 1

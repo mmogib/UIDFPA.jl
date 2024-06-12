@@ -1,7 +1,7 @@
 name = "UIDFPA"
 uuid = "0785bcfc-1922-43bf-b3ed-5bd5e9af463f"
 authors = ["Mohammed Alshahrani <mmogib@gmail.com> and contributors"]
-version = "1.5.0-DEV"
+version = "1.6.0-DEV"
 
 [deps]
 Clarabel = "61c947e1-3e6d-4ee4-985a-eec8c727bd6e"
